@@ -11,7 +11,14 @@
     <div id="elm-app"></div>
     <script src="elm.js"></script>
     <script>
-      var myApp = Elm.Main.init({node: document.getElementById("elm-app")});
+    var myApp = Elm.Main.init(
+      {
+        node: document.getElementById("elm-app"),
+        flags: {
+          height: window.innerHeight,
+          width: window.innerWidth
+        }
+      });
     </script>
   </body>
 </html>
