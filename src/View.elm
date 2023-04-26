@@ -200,13 +200,13 @@ bioSection attr =
         ([ spacing 15, width fill ] ++ attr)
         [ paragraph
             []
-            [ text "Hi, I'm Birkir Ólafsson. A developer and consultant based in Iceland. I live in Reykjavik with my wife and four kids" ]
+            [ text "Hi, I'm Birkir Ólafsson. A developer and consultant residing in Reykjavik, Iceland with my wife and four kids." ]
         , paragraph
             []
-            [ text "I love the challenge of finding technical solutions to real world problems. I mostly put my focus on systems design." ]
+            [ text "My passion lies in finding technical solutions to real-world challenges with a particular focus on systems level design." ]
         , paragraph
             []
-            [ text "In my spare time I also like problem solving doing Brazilian Jiu Jitsu and I'm currently having a lot of fun integrating ChatGPT and Github's Copilot into my development workflow." ]
+            [ text "When I'm not working I enjoy the thrill of problem-solving through Brazilian Jiu Jitsu. Currently I'm excited to explore integrating ChatGPT and Github's Copilot into my development workflow, which has been a lot of fun." ]
         ]
 
 
