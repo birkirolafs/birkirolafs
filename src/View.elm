@@ -1,25 +1,39 @@
 module View exposing (content, footer, header, menu, related, view)
 
-import Colors exposing (deepskyblue, gold, hotpink, lightgreen, tomato)
 import Element
     exposing
         ( Attribute
         , DeviceClass(..)
         , Element
         , Orientation(..)
+        , alignLeft
+        , centerX
+        , centerY
+        , clip
         , column
         , el
         , fill
         , fillPortion
         , height
+        , image
         , layout
+        , link
+        , maximum
+        , minimum
         , padding
+        , paddingXY
         , paragraph
         , row
+        , shrink
+        , spacing
+        , spacingXY
         , text
+        , textColumn
         , width
         )
 import Element.Background as Background
+import Element.Border as Border
+import Element.Font as Font
 import Element.Region as Region
 import Html exposing (Html)
 import Types exposing (Model, Msg(..))
@@ -30,16 +44,22 @@ view model =
     let
         responsiveLayout =
             case ( model.class, model.orientation ) of
-                ( Phone, _ ) ->
-                    phoneLayout
+                ( Phone, Portrait ) ->
+                    phonePortraitLayout
 
-                ( Tablet, _ ) ->
+                ( Phone, Landscape ) ->
+                    phoneLandscapeLayout
+
+                ( Tablet, Portrait ) ->
+                    tabletLayout
+
+                ( Tablet, Landscape ) ->
                     tabletLayout
 
                 ( Desktop, Portrait ) ->
                     tabletLayout
 
-                ( Desktop, _ ) ->
+                ( Desktop, Landscape ) ->
                     desktopLayout
 
                 ( BigDesktop, _ ) ->
@@ -52,39 +72,31 @@ view model =
 -- LAYOUTS
 
 
-phoneLayout : Element Msg
-phoneLayout =
+phonePortraitLayout : Element Msg
+phonePortraitLayout =
     column [ height fill, width fill ]
-        [ header []
-        , content []
-        , menu []
-        , related []
+        [ phonePortraitContent []
+        , footer []
+        ]
+
+
+phoneLandscapeLayout : Element Msg
+phoneLandscapeLayout =
+    column [ height fill, width fill ]
+        [ content []
         , footer []
         ]
 
 
 tabletLayout : Element Msg
 tabletLayout =
-    column [ height fill, width fill ]
-        [ header []
-        , content []
-        , row [ width fill ]
-            [ menu []
-            , related []
-            ]
-        , footer []
-        ]
+    phoneLandscapeLayout
 
 
 desktopLayout : Element Msg
 desktopLayout =
-    column [ height fill, width fill ]
-        [ header []
-        , row [ height fill ]
-            [ menu [ width (fillPortion 1), height fill ]
-            , content [ width (fillPortion 3), height fill ]
-            , related [ width (fillPortion 1), height fill ]
-            ]
+    column [ height fill, width fill, paddingXY 100 0 ]
+        [ content []
         , footer []
         ]
 
@@ -101,20 +113,20 @@ bigDesktopLayout =
 header : List (Attribute Msg) -> Element Msg
 header attr =
     el
-        ([ Background.color tomato
-         , padding 15
+        ([ padding 15
          , width fill
          ]
             ++ attr
         )
-        (text "Header")
+    <|
+        el [ centerY ] <|
+            text ""
 
 
 menu : List (Attribute Msg) -> Element Msg
 menu attr =
     el
-        ([ Background.color gold
-         , padding 15
+        ([ padding 15
          , width fill
          , Region.navigation
          ]
@@ -125,9 +137,25 @@ menu attr =
 
 content : List (Attribute Msg) -> Element Msg
 content attr =
-    el
-        ([ Background.color deepskyblue
-         , padding 15
+    row
+        ([ padding 15
+         , height fill
+         , width fill
+         , spacing 15
+         , Region.mainContent
+         ]
+            ++ attr
+        )
+    <|
+        [ avatarPicture [ width <| maximum 250 <| fillPortion 1 ]
+        , bioSection [ width <| fillPortion 2 ]
+        ]
+
+
+phoneLandscapeContent : List (Attribute Msg) -> Element Msg
+phoneLandscapeContent attr =
+    column
+        ([ padding 15
          , width fill
          , height fill
          , Region.mainContent
@@ -135,16 +163,57 @@ content attr =
             ++ attr
         )
     <|
-        paragraph
+        [ el [ height <| fillPortion 1 ] (text "")
+        , avatarPicture [ centerX, height <| maximum 250 <| fillPortion 4 ]
+        , el [ height <| fillPortion 1 ] (text "")
+        , bioSection [ centerX, height <| fillPortion 6 ]
+        , el [ height <| fillPortion 1 ] (text "")
+        ]
+
+
+phonePortraitContent : List (Attribute Msg) -> Element Msg
+phonePortraitContent attr =
+    column
+        ([ padding 15
+         , width fill
+         , height fill
+         , Region.mainContent
+         ]
+            ++ attr
+        )
+    <|
+        [ avatarPicture [ centerX, width <| maximum 200 <| fill ]
+        , el [ height <| maximum 20 <| fillPortion 1 ] (text "")
+        , bioSection [ centerX, height <| fillPortion 3 ]
+        , el [ height <| maximum 20 <| fillPortion 1 ] (text "")
+        ]
+
+
+avatarPicture : List (Attribute Msg) -> Element Msg
+avatarPicture attr =
+    image ([ Border.width 2, Border.rounded 6 ] ++ attr) { src = "birkir.webp", description = "A profile picture of Birkir Ólafsson" }
+
+
+bioSection : List (Attribute Msg) -> Element Msg
+bioSection attr =
+    textColumn
+        ([ spacing 15, width fill ] ++ attr)
+        [ paragraph
             []
-            [ el [] (text "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.") ]
+            [ text "Hi, I'm Birkir Ólafsson. A developer and consultant based in Iceland. I live in Reykjavik with my wife and four kids" ]
+        , paragraph
+            []
+            [ text "I love the challenge of finding technical solutions to real world problems. I mostly put my focus on systems design." ]
+        , paragraph
+            []
+            [ text "In my spare time I also like problem solving doing Brazilian Jiu Jitsu and I'm currently having a lot of fun integrating ChatGPT and Github's Copilot into my development workflow." ]
+        ]
 
 
 related : List (Attribute Msg) -> Element Msg
 related attr =
     el
-        ([ Background.color hotpink
-         , padding 15
+        ([ padding 15
          , width fill
          , Region.aside
          ]
@@ -156,11 +225,18 @@ related attr =
 footer : List (Attribute Msg) -> Element Msg
 footer attr =
     el
-        ([ Background.color lightgreen
-         , padding 15
-         , width fill
-         , Region.footer
-         ]
-            ++ attr
-        )
-        (text "Footer")
+        [ padding 15
+        , width fill
+        , Region.footer
+        ]
+    <|
+        paragraph
+            []
+            [ text "Feel free to contact me through email at "
+            , emailLink
+            ]
+
+
+emailLink : Element Msg
+emailLink =
+    link [ Font.underline ] { url = "mailto:birkir@birkirolafs.is", label = text "birkir@birkirolafs.is" }
