@@ -1,5 +1,6 @@
 module View exposing (content, footer, header, menu, related, view)
 
+import Colors exposing (deepskyblue)
 import Element
     exposing
         ( Attribute
@@ -20,6 +21,7 @@ import Element
         , link
         , maximum
         , minimum
+        , newTabLink
         , padding
         , paddingXY
         , paragraph
@@ -191,7 +193,7 @@ phonePortraitContent attr =
 
 avatarPicture : List (Attribute Msg) -> Element Msg
 avatarPicture attr =
-    image ([ Border.width 2, Border.rounded 6 ] ++ attr) { src = "birkir.webp", description = "A profile picture of Birkir Ólafsson" }
+    image ([ Border.width 2, Border.rounded 6 ] ++ attr) { src = "/birkir.webp", description = "A profile picture of Birkir Ólafsson" }
 
 
 bioSection : List (Attribute Msg) -> Element Msg
@@ -200,13 +202,13 @@ bioSection attr =
         ([ spacing 15, width fill ] ++ attr)
         [ paragraph
             []
-            [ text "Hi, I'm Birkir Ólafsson. A developer and consultant residing in Reykjavik, Iceland with my wife and four kids." ]
+            [ text "Hi, I'm Birkir Ólafsson." ]
         , paragraph
             []
-            [ text "My passion lies in finding technical solutions to real-world challenges with a particular focus on systems level design." ]
+            [ text "I'm a software developer and consultant based in Reykjavik, Iceland, where I live with my wife and four children." ]
         , paragraph
             []
-            [ text "When I'm not working I enjoy the thrill of problem-solving through Brazilian Jiu Jitsu. Currently I'm excited to explore integrating ChatGPT and Github's Copilot into my development workflow, which has been a lot of fun." ]
+            [ text "Problem-solving is what motivates me and keeps me focused" ]
         ]
 
 
@@ -234,9 +236,16 @@ footer attr =
             []
             [ text "Feel free to contact me through email at "
             , emailLink
+            , text " or check out my "
+            , cvLink
             ]
 
 
 emailLink : Element Msg
 emailLink =
     link [ Font.underline ] { url = "mailto:birkir@birkirolafs.is", label = text "birkir@birkirolafs.is" }
+
+
+cvLink : Element Msg
+cvLink =
+    newTabLink [ Font.underline ] { url = "/birkir_olafs_cv_2023.pdf", label = text "CV" }
